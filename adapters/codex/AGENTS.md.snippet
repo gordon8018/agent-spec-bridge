@@ -1,0 +1,15 @@
+## Agent Spec Bridge
+
+When implementing OpenSpec changes with GSD Core and Superpowers:
+
+- Use `gsd-spec-workflow` before planning or executing non-trivial work.
+- Read the current OpenSpec `proposal.md`, `design.md`, `tasks.md`, and
+  `specs/**/spec.md` before code changes.
+- Convert OpenSpec tasks into test-first execution tasks with
+  `openspec-to-tdd-plan`.
+- Use Superpowers TDD for code changes and verification-before-completion before
+  claiming completion.
+- Run `spec-compliance-check` after each completed implementation task.
+- Run `spec-archive-gate` before archive, commit, ship, or PR readiness.
+- Treat spec violations as defects.
+
