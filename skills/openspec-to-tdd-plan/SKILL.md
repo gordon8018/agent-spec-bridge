@@ -24,9 +24,11 @@ catch missing files and open checklist items.
 
 ## Output
 
-Create or update the GSD phase plan. If the project has no GSD structure yet,
-write a temporary plan under `docs/superpowers/plans/<change-id>.md` and mark it
-as pending migration into GSD state.
+No-GSD mode: create or update
+`docs/superpowers/plans/<change-id>.md` as the primary execution plan.
+
+GSD mode: create or update the current GSD phase plan and reference the OpenSpec
+change id.
 
 Each execution task must include:
 
@@ -46,10 +48,10 @@ split it unless the behaviors are inseparable.
 
 - Treating `tasks.md` as an implementation plan
 - Using `/opsx:apply` when the user only asked for a plan
+- Invoking GSD workflows when the project is using no-GSD mode
 - Omitting non-goals from execution context
 - Writing production code before the failing test exists
 
 ## References
 
 Read `references/task-splitting.md` when a change has broad or ambiguous tasks.
-

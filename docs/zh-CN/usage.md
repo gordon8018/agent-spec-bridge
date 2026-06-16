@@ -1,6 +1,6 @@
 # 使用说明
 
-本文说明如何在 Codex 或 Claude Code 中使用 `agent-spec-bridge`。
+本文说明如何在 Codex 或 Claude Code 中使用 `agent-spec-bridge`。GSD Core 是可选的。
 
 ## 前置条件
 
@@ -37,7 +37,13 @@ Codex:       adapters/codex/AGENTS.md.snippet
 Claude Code: adapters/claude/CLAUDE.md.snippet
 ```
 
-## 推荐工作流
+## 选择模式
+
+如果需求范围清楚，使用 OpenSpec + Superpowers 即可。
+
+如果工作需要阶段状态、多 Agent 交接、长周期研究或分阶段验证，再使用 OpenSpec + Superpowers + GSD。
+
+## 推荐工作流：OpenSpec + Superpowers
 
 ### 1. 创建 OpenSpec 变更
 
@@ -71,19 +77,19 @@ openspec/changes/add-payment-callback-idempotency/
 ```text
 使用 agent-spec-bridge 处理 openspec/changes/add-payment-callback-idempotency。
 读取 proposal.md、design.md、tasks.md 和 specs/**/spec.md。
-把 OpenSpec tasks 转换成 GSD/Superpowers 测试优先执行计划。
+把 OpenSpec tasks 转换成 Superpowers 测试优先执行计划，保存到
+docs/superpowers/plans/add-payment-callback-idempotency.md。不要使用 GSD。
 不要写生产代码，生成计划后停下来给我确认。
 ```
 
 Agent 应该加载：
 
-- `gsd-spec-workflow`
 - `openspec-to-tdd-plan`
 
 计划中至少要说明：
 
 - OpenSpec change id
-- GSD phase 或临时计划路径
+- `docs/superpowers/plans/<change-id>.md` 下的计划路径
 - 验收场景
 - 不做事项
 - 设计约束
@@ -117,8 +123,20 @@ Agent 应该加载：
 
 ```text
 对 add-payment-callback-idempotency 运行 spec-archive-gate。
-如果测试、OpenSpec 校验、GSD verification 或规格合规检查不完整，阻止归档。
+如果测试、OpenSpec 校验或规格合规检查不完整，阻止归档。
 ```
+
+## 可选工作流：OpenSpec + Superpowers + GSD
+
+只有项目已经使用 GSD Core，或者用户明确要求使用 GSD 时，才走这个模式。
+
+```text
+使用 agent-spec-bridge 和 GSD 处理 openspec/changes/add-payment-callback-idempotency。
+读取 OpenSpec 文件，把测试优先执行计划挂到当前 GSD phase。
+不要写生产代码，生成计划后停下来给我确认。
+```
+
+这个模式下，Agent 还应该加载 `gsd-spec-workflow`，维护 GSD 阶段状态，并在 `spec-archive-gate` 前完成 GSD verification。
 
 ## CLI 检查
 
@@ -148,7 +166,7 @@ node cli/bridge.mjs collect-context ./openspec/changes/add-payment-callback-idem
 继续执行：
 
 ```text
-继续 add-todo-list 的当前 GSD 阶段。
+继续 add-todo-list。
 只执行下一个任务，使用 Superpowers TDD，完成后运行 spec-compliance-check。
 ```
 
@@ -163,7 +181,7 @@ node cli/bridge.mjs collect-context ./openspec/changes/add-payment-callback-idem
 
 | 失败表现 | 处理方式 |
 | --- | --- |
-| Agent 没读 OpenSpec 就开始改代码 | 停止，重新从 `gsd-spec-workflow` 开始 |
+| Agent 没读 OpenSpec 就开始改代码 | 停止，重新从 `openspec-to-tdd-plan` 开始；只有启用 GSD 时才使用 `gsd-spec-workflow` |
 | Agent 把 `tasks.md` 当成实现计划 | 用 `openspec-to-tdd-plan` 拆成 TDD 任务 |
 | Agent 忽略“不做事项” | 运行 `spec-compliance-check`，按缺陷处理 |
 | 测试失败仍然归档 | 运行 `spec-archive-gate` 并阻止归档 |
@@ -175,4 +193,3 @@ node cli/bridge.mjs collect-context ./openspec/changes/add-payment-callback-idem
 - eval 场景已经列出，但还没有完全自动化跑通 Codex 和 Claude。
 - CLI 只覆盖机械检查。
 - Skills 仍是 alpha，团队级使用前应在真实项目中压测。
-

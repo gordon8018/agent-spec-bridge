@@ -1,7 +1,8 @@
 # agent-spec-bridge
 
-Agent skills and lightweight tooling for connecting OpenSpec, GSD Core, and
-Superpowers into one spec-driven development loop for Codex and Claude Code.
+Agent skills and lightweight tooling for connecting OpenSpec and Superpowers,
+with optional GSD Core phase coordination, into one spec-driven development
+loop for Codex and Claude Code.
 
 [中文文档](docs/zh-CN/README.md)
 
@@ -9,14 +10,16 @@ Status: `0.1.0-alpha.0`. The project contains an initial interoperable skill
 pack and deterministic checks. Treat the skills as draft process automation
 until the eval scenarios pass across both target agents.
 
+GSD Core is optional.
+
 ## Goal
 
-OpenSpec owns product intent. GSD Core owns project execution state.
-Superpowers owns engineering discipline. This project provides the thin bridge
-between them:
+OpenSpec owns product intent. Superpowers owns engineering discipline. GSD Core
+is optional; when used, it owns project execution state. This project provides
+the thin bridge between them:
 
 - convert OpenSpec changes into test-driven execution plans
-- keep GSD phase state aligned with OpenSpec scope
+- keep GSD phase state aligned with OpenSpec scope when GSD is in use
 - run spec compliance checks after implementation work
 - block archive or ship when tests, specs, or verification are incomplete
 
@@ -35,7 +38,8 @@ The skills use only portable `SKILL.md` frontmatter fields: `name` and
 
 ## Quick Start
 
-1. Install OpenSpec, GSD Core, and Superpowers in the host where your agent runs.
+1. Install OpenSpec and Superpowers in the host where your agent runs.
+   Install GSD Core only when you want phase-based project execution.
 2. Copy this repository's `skills/*` directories into your Codex or Claude Code
    skills directory.
 3. Add the matching project instruction snippet:
@@ -46,8 +50,9 @@ The skills use only portable `SKILL.md` frontmatter fields: `name` and
    ```
 
 4. In your project, create or select an OpenSpec change.
-5. Ask the agent to convert that change into a GSD/Superpowers execution plan
-   before writing production code.
+5. Ask the agent to convert that change into a Superpowers execution plan before
+   writing production code. If the project uses GSD Core, ask it to attach the
+   plan to the current GSD phase.
 
 Example prompt:
 
@@ -93,7 +98,20 @@ adapters/codex/AGENTS.md.snippet
 adapters/claude/CLAUDE.md.snippet
 ```
 
-## Typical Workflow
+## Typical Workflows
+
+OpenSpec + Superpowers:
+
+```text
+OpenSpec change
+  -> openspec-to-tdd-plan
+  -> Superpowers TDD execution
+  -> spec-compliance-check after each task
+  -> spec-archive-gate
+  -> OpenSpec archive / PR / ship
+```
+
+OpenSpec + Superpowers + GSD:
 
 ```text
 OpenSpec change

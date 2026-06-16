@@ -21,6 +21,8 @@ is not enough.
 - Superpowers verification-before-completion has run for code changes
 - skipped checks are named with reasons
 
+In no-GSD mode, skip GSD verification. That is not a missing gate.
+
 Run `node cli/bridge.mjs archive-readiness <change-id-or-path>` when available.
 This catches only mechanical blockers; still run spec compliance review.
 
@@ -38,4 +40,3 @@ Report:
 ## Stop Rule
 
 If any required gate fails, do not archive, commit, ship, or open a ready PR.
-

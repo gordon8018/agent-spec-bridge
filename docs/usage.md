@@ -1,6 +1,7 @@
 # Usage Guide
 
 This guide explains how to use `agent-spec-bridge` with Codex or Claude Code.
+GSD Core is optional.
 
 ## What This Project Does
 
@@ -9,7 +10,8 @@ a thin coordination layer:
 
 - OpenSpec defines the requested behavior, non-goals, design constraints, and
   acceptance scenarios.
-- GSD Core tracks discussion, planning, execution, verification, and shipping.
+- GSD Core tracks discussion, planning, execution, verification, and shipping
+  when you choose to use it.
 - Superpowers enforces TDD, debugging discipline, reviews, and completion
   verification.
 - `agent-spec-bridge` keeps the handoff between those tools explicit.
@@ -50,7 +52,15 @@ Codex:       adapters/codex/AGENTS.md.snippet
 Claude Code: adapters/claude/CLAUDE.md.snippet
 ```
 
-## Recommended Workflow
+## Choose a Mode
+
+Use OpenSpec + Superpowers when the change is scoped enough that OpenSpec files
+and a test-first plan are sufficient.
+
+Use OpenSpec + Superpowers + GSD when the work needs explicit phase state,
+multi-agent handoffs, longer research, or staged verification.
+
+## Recommended Workflow: OpenSpec + Superpowers
 
 ### 1. Create an OpenSpec change
 
@@ -84,19 +94,19 @@ Use a prompt like this:
 ```text
 Use agent-spec-bridge for openspec/changes/add-payment-callback-idempotency.
 Read proposal.md, design.md, tasks.md, and specs/**/spec.md.
-Convert the OpenSpec tasks into a GSD/Superpowers test-first execution plan.
+Convert the OpenSpec tasks into a Superpowers test-first execution plan under
+docs/superpowers/plans/add-payment-callback-idempotency.md. Do not use GSD.
 Do not write production code yet. Stop for review after the plan.
 ```
 
 The agent should load:
 
-- `gsd-spec-workflow`
 - `openspec-to-tdd-plan`
 
 The plan should identify:
 
 - OpenSpec change id
-- GSD phase or temporary plan path
+- plan path under `docs/superpowers/plans/<change-id>.md`
 - acceptance scenarios
 - non-goals
 - design constraints
@@ -130,9 +140,22 @@ Before archiving, committing, shipping, or opening a ready PR:
 
 ```text
 Run spec-archive-gate for add-payment-callback-idempotency.
-Block archive if tests, OpenSpec checks, GSD verification, or spec compliance
-are incomplete.
+Block archive if tests, OpenSpec checks, or spec compliance are incomplete.
 ```
+
+## Optional Workflow: OpenSpec + Superpowers + GSD
+
+Use this mode only when the project already uses GSD Core or the user explicitly
+asks for it.
+
+```text
+Use agent-spec-bridge with GSD for openspec/changes/add-payment-callback-idempotency.
+Read the OpenSpec files and attach the test-first execution plan to the current
+GSD phase. Stop for review before writing production code.
+```
+
+In this mode, the agent should also load `gsd-spec-workflow`, track GSD phase
+state, and run GSD verification before `spec-archive-gate`.
 
 ## CLI Checks
 
@@ -163,8 +186,8 @@ files and create a test-first execution plan. Do not edit code yet.
 Continue execution:
 
 ```text
-Continue the current GSD phase for add-todo-list. Execute only the next task
-with Superpowers TDD, then run spec-compliance-check.
+Continue add-todo-list. Execute only the next task with Superpowers TDD, then
+run spec-compliance-check.
 ```
 
 Archive:
@@ -178,7 +201,7 @@ if any gate fails.
 
 | Failure | What to do |
 | --- | --- |
-| Agent edits code before reading OpenSpec | Stop and restart from `gsd-spec-workflow` |
+| Agent edits code before reading OpenSpec | Stop and restart from `openspec-to-tdd-plan`; use `gsd-spec-workflow` only if GSD is active |
 | Agent treats `tasks.md` as implementation plan | Use `openspec-to-tdd-plan` to split into TDD tasks |
 | Agent ignores non-goals | Run `spec-compliance-check` and treat violations as defects |
 | Agent archives with failing tests | Run `spec-archive-gate` and block archive |
@@ -190,4 +213,3 @@ if any gate fails.
 - Eval scenarios are documented but not fully automated across Codex and Claude.
 - The CLI catches mechanical problems only.
 - Skills are alpha and should be tested in real projects before team-wide use.
-
