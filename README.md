@@ -3,6 +3,8 @@
 Agent skills and lightweight tooling for connecting OpenSpec, GSD Core, and
 Superpowers into one spec-driven development loop for Codex and Claude Code.
 
+[中文文档](docs/zh-CN/README.md)
+
 Status: `0.1.0-alpha.0`. The project contains an initial interoperable skill
 pack and deterministic checks. Treat the skills as draft process automation
 until the eval scenarios pass across both target agents.
@@ -30,6 +32,32 @@ skills/
 
 The skills use only portable `SKILL.md` frontmatter fields: `name` and
 `description`. Host-specific setup lives under `adapters/`.
+
+## Quick Start
+
+1. Install OpenSpec, GSD Core, and Superpowers in the host where your agent runs.
+2. Copy this repository's `skills/*` directories into your Codex or Claude Code
+   skills directory.
+3. Add the matching project instruction snippet:
+
+   ```text
+   adapters/codex/AGENTS.md.snippet
+   adapters/claude/CLAUDE.md.snippet
+   ```
+
+4. In your project, create or select an OpenSpec change.
+5. Ask the agent to convert that change into a GSD/Superpowers execution plan
+   before writing production code.
+
+Example prompt:
+
+```text
+Use agent-spec-bridge for openspec/changes/add-payment-callback-idempotency.
+Read the proposal, design, tasks, and specs first. Create a test-first execution
+plan and stop for review before writing production code.
+```
+
+See [docs/usage.md](docs/usage.md) for the full workflow.
 
 ## CLI
 
@@ -65,6 +93,19 @@ adapters/codex/AGENTS.md.snippet
 adapters/claude/CLAUDE.md.snippet
 ```
 
+## Typical Workflow
+
+```text
+OpenSpec change
+  -> gsd-spec-workflow
+  -> openspec-to-tdd-plan
+  -> Superpowers TDD execution
+  -> spec-compliance-check after each task
+  -> GSD verification
+  -> spec-archive-gate
+  -> OpenSpec archive / PR / ship
+```
+
 ## Development Rules
 
 - Do not duplicate OpenSpec, GSD Core, or Superpowers documentation.
@@ -75,4 +116,3 @@ adapters/claude/CLAUDE.md.snippet
 ## License
 
 MIT.
-
