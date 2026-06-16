@@ -62,6 +62,8 @@ skills/
 
 完整流程见：[使用说明](usage.md)。
 
+完整 demo 教程见：[tutorial-add-todo-list.md](tutorial-add-todo-list.md)。
+
 ## 典型流程
 
 OpenSpec + Superpowers：

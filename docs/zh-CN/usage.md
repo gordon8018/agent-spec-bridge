@@ -156,6 +156,9 @@ node cli/bridge.mjs collect-context ./openspec/changes/add-payment-callback-idem
 
 ## 推荐提示词
 
+如果需要一步一步看完整 demo，请阅读：
+[tutorial-add-todo-list.md](tutorial-add-todo-list.md)。
+
 只生成计划：
 
 ```text

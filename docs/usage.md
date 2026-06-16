@@ -176,6 +176,9 @@ node cli/bridge.mjs collect-context ./openspec/changes/add-payment-callback-idem
 
 ## Good Agent Prompts
 
+For a step-by-step demo using a todo-list feature, see
+[tutorial-add-todo-list.md](tutorial-add-todo-list.md).
+
 Plan first:
 
 ```text

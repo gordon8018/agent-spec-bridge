@@ -64,6 +64,9 @@ plan and stop for review before writing production code.
 
 See [docs/usage.md](docs/usage.md) for the full workflow.
 
+For a complete demo, see
+[docs/tutorial-add-todo-list.md](docs/tutorial-add-todo-list.md).
+
 ## CLI
 
 The CLI is intentionally small and deterministic. It does not replace agent
